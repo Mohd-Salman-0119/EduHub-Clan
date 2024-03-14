@@ -1,3 +1,4 @@
+const { generateToken } = require('../configs/generateToken');
 const {
      UserModel,
      LectureModel,
@@ -5,58 +6,32 @@ const {
      DiscussionModel
 } = require('../imports/models.imports')
 
+const { getAllUsers, getSingleUser, getAllLecture, getSingleLecture, getAllCourse, getSingleCourse, createUserController, loginUser, updateUser, createLecture, updateLecture, deleteLecture, createCourseController, updateCourse, deleteCourse } = require('../imports/controller.imports')
+
+const { ApolloError, bcrypt, jwt } = require("../imports/modules.imports");
+const { authMiddleware } = require('../middleware/authenticate.middleware');
+
 
 const resolvers = {
      Query: {
-
-
-          users: async () => {
-               try {
-                    const users = await UserModel.find();
-                    return users;
-               } catch (error) {
-                    throw new Error('Failed to fetch users');
-               }
+          users: async (_, __, context) => {
+               // await authMiddleware("ADMIN")(context);
+               return getAllUsers();
           },
           user: async (_, { id }) => {
-               try {
-                    const user = await UserModel.findById(id);
-                    return user;
-               } catch (error) {
-                    throw new Error('Failed to fetch user');
-               }
+               return getSingleUser(id)
           },
           lectures: async () => {
-               try {
-                    const lectures = await LectureModel.find();
-                    return lectures;
-               } catch (error) {
-                    throw new Error('Failed to fetch lectures');
-               }
+               return getAllLecture();
           },
           lecture: async (_, { id }) => {
-               try {
-                    const lecture = await LectureModel.findById(id);
-                    return lecture;
-               } catch (error) {
-                    throw new Error('Failed to fetch lecture');
-               }
+               return getSingleLecture(id);
           },
           courses: async () => {
-               try {
-                    const courses = await CourseModel.find();
-                    return courses;
-               } catch (error) {
-                    throw new Error('Failed to fetch courses');
-               }
+               return getAllCourse();
           },
           course: async (_, { id }) => {
-               try {
-                    const course = await CourseModel.findById(id);
-                    return course;
-               } catch (error) {
-                    throw new Error('Failed to fetch course');
-               }
+               return getSingleCourse();
           }
      },
      User: {
@@ -82,7 +57,7 @@ const resolvers = {
                     const stringID = lecture.course.toString()
                     console.log(stringID)
                     const data = await CourseModel.findById({ _id: stringID });
-                    // console.log(data)
+                    console.log(data)
                     return data;
                } catch (error) {
                     throw new Error('Failed to fetch course');
@@ -90,89 +65,42 @@ const resolvers = {
           }
      },
      Mutation: {
-          createUser: async (_, args) => {
-               try {
-                    const newUser = await UserModel.create(args);
+          createUser: async (_, { email, password, role, name }) => {
 
-                    return newUser;
-               } catch (error) {
-                    throw new Error('Failed to create user');
-               }
+               return createUserController(email, password, role, name)
+          },
+          loginUser: async (_, { email, password }, context) => {
+
+               return loginUser(email, password)
+
           },
           updateUser: async (_, { id, ...args }) => {
-               try {
-
-                    // Find the user by ID
-                    const updatedUser = await UserModel.findById(id);
-                    console.log(id, args)
-                    if (!updatedUser) {
-                         throw new Error('User not found');
-                    }
-                    // Push the course IDs into the courses array
-
-                    updatedUser.course.push(...args.course);
-
-                    // Update the user with other provided arguments
-                    const updatedUserData = { ...args };
-
-                    // Perform the update
-
-                    const updatedUserResult = await updatedUser.save()
-                    // console.log(updatedUserResult)
-
-
-                    return updatedUserResult;
-               } catch (error) {
-                    throw new Error('Failed to update user: ' + error.message);
-               }
+               return updateUser(id, args)
           },
-          createLecture: async (_, args) => {
-               try {
-                    const newLecture = await LectureModel.create(args);
-                    return newLecture;
-               } catch (error) {
-                    throw new Error('Failed to create lecture');
-               }
+
+          createLecture: async (_, args, context) => {
+               authMiddleware("ADMIN")(context.user)
+               return createLecture(args)
           },
-          updateLecture: async (_, { id, ...args }) => {
-               try {
-                    const updatedLecture = await LectureModel.findByIdAndUpdate(id, args, { new: true });
-                    return updatedLecture;
-               } catch (error) {
-                    throw new Error('Failed to update lecture');
-               }
+          updateLecture: async (_, { id, ...args }, context) => {
+               authMiddleware("ADMIN")(context.user)
+               return updateLecture(id, args)
           },
-          deleteLecture: async (_, { id }) => {
-               try {
-                    await LectureModel.findByIdAndDelete(id);
-                    return id;
-               } catch (error) {
-                    throw new Error('Failed to delete lecture');
-               }
+          deleteLecture: async (_, { id }, context) => {
+               authMiddleware("ADMIN")(context.user)
+               return deleteLecture(id)
           },
-          createCourse: async (_, args) => {
-               try {
-                    const newCourse = await CourseModel.create(args);
-                    return newCourse;
-               } catch (error) {
-                    throw new Error('Failed to create course');
-               }
+          createCourse: async (_, { title, description }, context) => {
+               authMiddleware("ADMIN")(context.user)
+               return createCourseController({ title, description }, context)
           },
-          updateCourse: async (_, { id, ...args }) => {
-               try {
-                    const updatedCourse = await CourseModel.findByIdAndUpdate(id, args, { new: true });
-                    return updatedCourse;
-               } catch (error) {
-                    throw new Error('Failed to update course');
-               }
+          updateCourse: async (_, { id, ...args }, context) => {
+               authMiddleware("ADMIN")(context.user)
+               return updateCourse(id, args)
           },
-          deleteCourse: async (_, { id }) => {
-               try {
-                    await CourseModel.findByIdAndDelete(id);
-                    return id;
-               } catch (error) {
-                    throw new Error('Failed to delete course');
-               }
+          deleteCourse: async (_, { id }, context) => {
+               authMiddleware("ADMIN")(context.user)
+               return deleteCourse(id)
           }
      },
 };

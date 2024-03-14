@@ -5,8 +5,11 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const asyncHandler = require("express-async-handler");
 const colors = require('colors')
-const { ApolloServer } = require('@apollo/server');
-const { startStandaloneServer } = require('@apollo/server/standalone');
+const { ApolloServer, startStandaloneServer, } = require('apollo-server-express');
+const { ForbiddenError, AuthenticationError, ApolloError } = require('apollo-server')
+const { GraphQLError } = require('graphql')
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 const redis = require('redis');
 const util = require('util');
 
@@ -24,5 +27,10 @@ module.exports = {
      startStandaloneServer,
      colors,
      redis,
-     util
+     util,
+     ForbiddenError, AuthenticationError,
+     ApolloError,
+     cookieParser,
+     bodyParser,
+     GraphQLError
 };
