@@ -1,16 +1,24 @@
 import { Card, Typography } from "@material-tailwind/react";
 import { useMutation } from "@apollo/client";
 import React, { useState } from "react";
-import { Button, Input, Radio } from "antd";
-import { UserOutlined, MailOutlined, LockOutlined } from "@ant-design/icons";
+import { Button, Input, Radio, notification } from "antd";
+import {
+  EyeTwoTone,
+  MailOutlined,
+  LockOutlined,
+  EyeInvisibleOutlined,
+} from "@ant-design/icons";
 import { logo } from "../assets/image";
 import { Link } from "react-router-dom";
 import { LOGIN_USER_MUTATION } from "../graphql/muatation.graphql";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../Redux/Auth/actionType";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginUser, { loading, error }] = useMutation(LOGIN_USER_MUTATION);
+  const dispatch = useDispatch();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -18,11 +26,11 @@ const Login = () => {
       const { data } = await loginUser({
         variables: { email, password },
       });
-      console.log("User logged in:", data.loginUser);
-      // Optionally, you can handle successful login here (e.g., redirect user).
+      notification.success({ message: "Login Successfull" });
+      console.log();
+      dispatch(loginSuccess(data.loginUser.token));
     } catch (error) {
       console.error("Error logging in:", error);
-      // Optionally, you can handle login errors here (e.g., display an error message).
     }
   };
 
@@ -43,11 +51,24 @@ const Login = () => {
           Sign In
         </Typography>
         <div className="w-full flex flex-col gap-2">
-          <Input size="large" placeholder="E-mail" prefix={<MailOutlined />} />
           <Input
             size="large"
+            placeholder="E-mail"
+            prefix={<MailOutlined />}
+            onChange={(e) => {
+              setEmail(e.target.value);
+            }}
+          />
+          <Input.Password
             placeholder="Password"
+            size="large"
             prefix={<LockOutlined />}
+            iconRender={(visible) =>
+              visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+            }
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
           />
 
           <Button

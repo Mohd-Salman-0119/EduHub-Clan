@@ -13,6 +13,8 @@ import { logo } from "../assets/image";
 import { Link, useNavigate } from "react-router-dom";
 import { CourseDialog } from "./CourseModel";
 import { CREATE_USER_MUTATION } from "../graphql/muatation.graphql";
+import { useDispatch } from "react-redux";
+import { registerSuccess } from "../Redux/Auth/actionType";
 
 const optionsWithDisabled = [
   {
@@ -27,6 +29,7 @@ const optionsWithDisabled = [
 
 const Register = () => {
   const [createUser, { loading, error }] = useMutation(CREATE_USER_MUTATION);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState({
@@ -113,7 +116,9 @@ const Register = () => {
             password: user.password,
           },
         });
+
         notification.success({ message: "Registeration Successfull" });
+        dispatch(registerSuccess(data?.createUser?.token));
       } catch (error) {
         notification.error({
           message: "Registeration failed",
