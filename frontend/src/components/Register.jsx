@@ -1,7 +1,7 @@
 import { Card, Typography } from "@material-tailwind/react";
 import { useMutation } from "@apollo/client";
 import React, { useState } from "react";
-import { Button, Input, Radio } from "antd";
+import { Button, Input, Radio, notification } from "antd";
 import {
   UserOutlined,
   MailOutlined,
@@ -10,8 +10,7 @@ import {
   LockOutlined,
 } from "@ant-design/icons";
 import { logo } from "../assets/image";
-import { Link } from "react-router-dom";
-import { LockClosedIcon } from "@heroicons/react/24/solid";
+import { Link, useNavigate } from "react-router-dom";
 import { CourseDialog } from "./CourseModel";
 import { CREATE_USER_MUTATION } from "../graphql/muatation.graphql";
 
@@ -28,17 +27,21 @@ const optionsWithDisabled = [
 
 const Register = () => {
   const [createUser, { loading, error }] = useMutation(CREATE_USER_MUTATION);
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState({
     name: "",
     email: "",
     password: "",
     role: "",
+    confirmPassword: "",
   });
 
   const handleOnChange = (type, value) => {
+    console.log(value);
     setUser({ ...user, [type]: value });
   };
+  console.log(user);
   const handleOpen = () => {
     setOpen((p) => !p);
   };
@@ -50,21 +53,73 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    try {
-      const { data } = await createUser({
-        variables: {
-          name: user.name,
-          email: user.email,
-          role: user.role,
-          password: user.password,
-        },
+    let formIsValid = true;
+    if (!user.name) {
+      notification.info({
+        message: "Name is required.",
+        description: "Please check the form name field.",
       });
-      console.log("User registered:", data.createUser);
-      // Optionally, you can handle successful registration here (e.g., show a success message).
-    } catch (error) {
-      console.error("Error registering user:", error);
-      // Optionally, you can handle errors here (e.g., display an error message).
+      formIsValid = false;
+    }
+    if (!user.email.trim()) {
+      notification.info({
+        message: "Email is required",
+        description: "Please check the form email field.",
+      });
+      formIsValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(user.email)) {
+      notification.info({
+        message: "Email address is invalid",
+        description: "Please check the email address.",
+      });
+      formIsValid = false;
+    }
+    console.log(user.password);
+    if (!user.password.trim()) {
+      notification.info({
+        message: "Password is required",
+        description: "Please check the form password field.",
+      });
+      formIsValid = false;
+    } else if (user.password.trim().length < 6) {
+      notification.info({
+        message: "Password must be at least 6 characters long",
+      });
+      formIsValid = false;
+    }
+
+    if (!user.confirmPassword.trim()) {
+      notification.info({
+        message: "Confirm Password is required",
+        description: "Please check the form confirm password field.",
+      });
+      formIsValid = false;
+    } else if (user.confirmPassword.trim() !== user.password.trim()) {
+      notification.info({
+        message: "Passwords do not match",
+        description: "Please check provided passwords not match",
+      });
+      formIsValid = false;
+    }
+    console.log(user);
+
+    if (formIsValid) {
+      try {
+        const { data } = await createUser({
+          variables: {
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            password: user.password,
+          },
+        });
+        notification.success({ message: "Registeration Successfull" });
+      } catch (error) {
+        notification.error({
+          message: "Registeration failed",
+          description: `The user is already exist.`,
+        });
+      }
     }
   };
   return (
@@ -105,16 +160,22 @@ const Register = () => {
             size="large"
             prefix={<LockOutlined />}
             iconRender={(visible) =>
-              visible ? (
-                <EyeTwoTone />
-              ) : (
-                <EyeInvisibleOutlined
-                  onChange={(e) => {
-                    handleOnChange("password", e.target.value);
-                  }}
-                />
-              )
+              visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
             }
+            onChange={(e) => {
+              handleOnChange("password", e.target.value);
+            }}
+          />
+          <Input.Password
+            placeholder="Confirm Password"
+            size="large"
+            prefix={<LockOutlined />}
+            iconRender={(visible) =>
+              visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+            }
+            onChange={(e) => {
+              handleOnChange("confirmPassword", e.target.value);
+            }}
           />
           <div className="flex justify-between">
             <Radio.Group

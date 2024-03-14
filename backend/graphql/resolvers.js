@@ -15,7 +15,6 @@ const { authMiddleware } = require('../middleware/authenticate.middleware');
 const resolvers = {
      Query: {
           users: async (_, { searchTerm, sortField, sortOrder, offset, limit }, context) => {
-               await authMiddleware("ADMIN")(context.user)
                return getAllUsers(searchTerm, sortField, sortOrder, offset, limit);
           },
           user: async (_, { id }) => {
@@ -28,7 +27,6 @@ const resolvers = {
                return getSingleLecture(id);
           },
           courses: async (_, { searchTerm, sortField, sortOrder, offset, limit }, context) => {
-               await authMiddleware("ADMIN")(context.user)
                return getAllCourse(searchTerm, sortField, sortOrder, offset, limit);
           },
           course: async (_, { id }) => {
