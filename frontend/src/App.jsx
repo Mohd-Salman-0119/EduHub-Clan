@@ -2,13 +2,18 @@ import React from "react";
 import { useQuery, gql } from "@apollo/client";
 import { GET_ALL_COURSE } from "./graphql/queries.graphql";
 import MainRoutes from "./routes/MainRoutes";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { loginSuccess } from "./Redux/Auth/actionType";
 
 const App = () => {
-  const { loading, error, data } = useQuery(GET_ALL_COURSE);
-  console.log(data);
+  const dispatch = useDispatch();
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error : {error.message}</p>;
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    dispatch(loginSuccess(token));
+  }, []);
+
   return (
     <div>
       <MainRoutes />

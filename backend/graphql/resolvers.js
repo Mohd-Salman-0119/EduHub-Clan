@@ -64,8 +64,8 @@ const resolvers = {
           }
      },
      Mutation: {
-          createUser: async (_, { email, password, role, name }) => {
-               return createUserController(email, password, role, name)
+          createUser: async (_, { email, password, role, name, course }) => {
+               return createUserController(email, password, role, name, course)
           },
           loginUser: async (_, { email, password }) => {
                return loginUser(email, password)

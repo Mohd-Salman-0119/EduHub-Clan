@@ -9,7 +9,7 @@ import {
   EyeInvisibleOutlined,
 } from "@ant-design/icons";
 import { logo } from "../assets/image";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { LOGIN_USER_MUTATION } from "../graphql/muatation.graphql";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../Redux/Auth/actionType";
@@ -19,6 +19,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [loginUser, { loading, error }] = useMutation(LOGIN_USER_MUTATION);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -27,8 +28,9 @@ const Login = () => {
         variables: { email, password },
       });
       notification.success({ message: "Login Successfull" });
-      console.log();
       dispatch(loginSuccess(data.loginUser.token));
+      localStorage.setItem("token", data.loginUser.token);
+      navigate("/");
     } catch (error) {
       console.error("Error logging in:", error);
     }
@@ -46,7 +48,7 @@ const Login = () => {
           <h1 className="font-medium text-4xl ">EduHub</h1>
         </Typography>
       </div>
-      <Card className="flex flex-col gap-3 items-center p-4 w-4/12 shadow-lg shadow-gray-300 ">
+      <Card className="flex flex-col gap-3 items-center p-4 w-11/12 sm:w-3/4 md:w-2/3 lg:w-2/4 xl:w-4/12 shadow-lg shadow-gray-300 ">
         <Typography className="text-2xl text-black font-semibold">
           Sign In
         </Typography>

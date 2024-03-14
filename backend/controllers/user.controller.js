@@ -64,7 +64,7 @@ const updateUser = asyncHandler(async (id, args) => {
           throw new Error('Failed to update user: ' + error.message);
      }
 })
-const createUserController = asyncHandler(async (email, password, role, name) => {
+const createUserController = asyncHandler(async (email, password, role, name, course) => {
      try {
           console.log(email, role)
           const user = await UserModel.findOne({ email })
@@ -78,7 +78,8 @@ const createUserController = asyncHandler(async (email, password, role, name) =>
                email: email.toLowerCase(),
                password: hashedPassword,
                name: name,
-               role: role
+               role: role,
+               course: course
           })
 
           // Generate JWT token

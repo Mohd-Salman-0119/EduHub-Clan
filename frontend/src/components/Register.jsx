@@ -32,6 +32,7 @@ const Register = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [course, setCourses] = useState([]);
   const [user, setUser] = useState({
     name: "",
     email: "",
@@ -44,9 +45,12 @@ const Register = () => {
     console.log(value);
     setUser({ ...user, [type]: value });
   };
-  console.log(user);
+  // console.log(user);
   const handleOpen = () => {
     setOpen((p) => !p);
+  };
+  const handleCourses = (data) => {
+    setCourses(data);
   };
 
   // const [value4, setValue4] = useState("Apple");
@@ -127,6 +131,8 @@ const Register = () => {
       }
     }
   };
+
+  console.log(course);
   return (
     <div className="flex items-center justify-center flex-col w-full h-svh custom-image">
       <div className="mb-2 p-4">
@@ -139,7 +145,7 @@ const Register = () => {
           <h1 className="font-medium text-4xl ">EduHub</h1>
         </Typography>
       </div>
-      <Card className="flex flex-col gap-3 items-center p-4 w-4/12 shadow-lg shadow-gray-300 ">
+      <Card className="flex flex-col gap-3 items-center p-4 w-11/12 sm:w-3/4 md:w-2/3 lg:w-2/4 xl:w-4/12 shadow-lg shadow-gray-300 ">
         <Typography className="text-2xl text-black font-semibold">
           Sign Up
         </Typography>
@@ -191,6 +197,14 @@ const Register = () => {
               buttonStyle="solid"
               className="w-full"
             />
+            <Button
+              type="dashed"
+              size={"middle"}
+              className="bg-blue-500"
+              onClick={handleOpen}
+            >
+              Choose Course
+            </Button>
           </div>
 
           <Button
@@ -216,7 +230,13 @@ const Register = () => {
         </div>
         <Typography>&copy; 2024 by EduHub</Typography>
       </div>
-      {open && <CourseDialog handleOpen={handleOpen} open={open} />}
+      {open && (
+        <CourseDialog
+          handleOpen={handleOpen}
+          open={open}
+          handleCourses={handleCourses}
+        />
+      )}
     </div>
   );
 };
