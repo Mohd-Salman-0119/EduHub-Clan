@@ -11,7 +11,7 @@ import {
 } from "@apollo/client";
 
 const client = new ApolloClient({
-  uri: "http://localhost:8000/graphql",
+  uri: "https://graceful-ant-leg-warmers.cyclic.app/graphql",
   cache: new InMemoryCache(),
 });
 
