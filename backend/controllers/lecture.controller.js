@@ -7,12 +7,26 @@ const {
 } = require('../imports/models.imports')
 
 
-const getAllLecture = asyncHandler(async () => {
+const getAllLecture = asyncHandler(async (searchTerm, sortField, sortOrder, offset, limit) => {
      try {
-          const users = await LectureModel.find();
-          return users;
+          let query = {};
+          if (searchTerm) {
+               query = { $or: [{ title: { $regex: searchTerm, $options: 'i' } }, { instructor: { $regex: searchTerm, $options: 'i' } }] };
+          }
+          let sort = {};
+          if (sortField && sortOrder) {
+               sort[sortField] = sortOrder === 'asc' ? 1 : -1;
+          }
+
+
+          const lectures = await LectureModel.find(query)
+               .sort(sort)
+               .skip(offset)
+               .limit(limit);
+
+          return lectures;
      } catch (error) {
-          throw new Error('Failed to fetch users');
+          throw new Error('Failed to fetch Lectures');
      }
 });
 
@@ -26,7 +40,7 @@ const getSingleLecture = asyncHandler(async (id) => {
 })
 const createLecture = asyncHandler(async (args) => {
      try {
-          const {} = args;
+          const { } = args;
           const newLecture = await LectureModel.create(args);
           console.log(newLecture)
 

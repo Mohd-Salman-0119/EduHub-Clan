@@ -8,9 +8,21 @@ const {
 } = require('../imports/models.imports')
 
 
-const getAllUsers = asyncHandler(async () => {
+const getAllUsers = asyncHandler(async (searchTerm, sortField, sortOrder, offset, limit) => {
      try {
-          const users = await UserModel.find();
+          let query = {};
+          if (searchTerm) {
+               query = { $or: [{ title: { $regex: searchTerm, $options: 'i' } }, { description: { $regex: searchTerm, $options: 'i' } }] };
+          }
+          let sort = {};
+          if (sortField && sortOrder) {
+               sort[sortField] = sortOrder === 'asc' ? 1 : -1;
+          }
+
+          const users = await UserModel.find(query)
+               .sort(sort)
+               .skip(offset)
+               .limit(limit);
           return users;
      } catch (error) {
           throw new Error('Failed to fetch users');
@@ -71,6 +83,7 @@ const createUserController = asyncHandler(async (email, password, role, name) =>
 
           // Generate JWT token
           const token = generateToken(newUser._id)
+
 
           newUser.token = token
 

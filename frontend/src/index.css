@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.custom-image {
+     background-image: url('https://students.masaischool.com/static/media/bg-set-pattern.1831f7ecb00f2642fbf0471b5003ada1.svg');
+     background-repeat: no-repeat;
+     background-size: cover;
+}

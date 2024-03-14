@@ -3,17 +3,18 @@ const { UserModel } = require('../imports/models.imports'); // Import User model
 
 const authorize = async (req, res) => {
      try {
-          const token = req.headers.authorization?.split(" ")[1] || "";
+          let token;
+
+          token = req.header("Authorization")?.replace("Bearer ", "").trim();
+
 
           if (!token) {
                throw new Error(`Invalid request: `)
-
           }
+          
           let decodedToken;
           try {
-
                decodedToken = jwt.verify(token, process.env.PRIVATE_KEY);
-
           } catch (error) {
                throw new Error(`Error verifying tokens: ${error.message}`)
 

@@ -14,24 +14,25 @@ const { authMiddleware } = require('../middleware/authenticate.middleware');
 
 const resolvers = {
      Query: {
-          users: async (_, __, context) => {
-               // await authMiddleware("ADMIN")(context);
-               return getAllUsers();
+          users: async (_, { searchTerm, sortField, sortOrder, offset, limit }, context) => {
+               await authMiddleware("ADMIN")(context.user)
+               return getAllUsers(searchTerm, sortField, sortOrder, offset, limit);
           },
           user: async (_, { id }) => {
                return getSingleUser(id)
           },
-          lectures: async () => {
-               return getAllLecture();
+          lectures: async (_, { searchTerm, sortField, sortOrder, offset, limit }) => {
+               return getAllLecture(searchTerm, sortField, sortOrder, offset, limit);
           },
           lecture: async (_, { id }) => {
                return getSingleLecture(id);
           },
-          courses: async () => {
-               return getAllCourse();
+          courses: async (_, { searchTerm, sortField, sortOrder, offset, limit }, context) => {
+               await authMiddleware("ADMIN")(context.user)
+               return getAllCourse(searchTerm, sortField, sortOrder, offset, limit);
           },
           course: async (_, { id }) => {
-               return getSingleCourse();
+               return getSingleCourse(id);
           }
      },
      User: {
@@ -66,40 +67,38 @@ const resolvers = {
      },
      Mutation: {
           createUser: async (_, { email, password, role, name }) => {
-
                return createUserController(email, password, role, name)
           },
-          loginUser: async (_, { email, password }, context) => {
-
+          loginUser: async (_, { email, password }) => {
                return loginUser(email, password)
-
           },
-          updateUser: async (_, { id, ...args }) => {
+          updateUser: async (_, { id, ...args }, context) => {
+               await authMiddleware("ADMIN")(context.user)
                return updateUser(id, args)
           },
 
           createLecture: async (_, args, context) => {
-               authMiddleware("ADMIN")(context.user)
+               await authMiddleware("ADMIN")(context.user)
                return createLecture(args)
           },
           updateLecture: async (_, { id, ...args }, context) => {
-               authMiddleware("ADMIN")(context.user)
+               await authMiddleware("ADMIN")(context.user)
                return updateLecture(id, args)
           },
           deleteLecture: async (_, { id }, context) => {
-               authMiddleware("ADMIN")(context.user)
+               await authMiddleware("ADMIN")(context.user)
                return deleteLecture(id)
           },
           createCourse: async (_, { title, description }, context) => {
-               authMiddleware("ADMIN")(context.user)
+               await authMiddleware("ADMIN")(context.user)
                return createCourseController({ title, description }, context)
           },
           updateCourse: async (_, { id, ...args }, context) => {
-               authMiddleware("ADMIN")(context.user)
+               await authMiddleware("ADMIN")(context.user)
                return updateCourse(id, args)
           },
           deleteCourse: async (_, { id }, context) => {
-               authMiddleware("ADMIN")(context.user)
+               await authMiddleware("ADMIN")(context.user)
                return deleteCourse(id)
           }
      },

@@ -43,11 +43,11 @@ const typeDefs = `#graphql
      }
 
      type Query {
-          lectures: [Lecture!]!
+          lectures(searchTerm: String, sortField: String, sortOrder: String, offset: Int, limit: Int): [Lecture!]!
           lecture(id: ID!): Lecture
-          courses: [Course!]!
+          courses(searchTerm: String, sortField: String, sortOrder: String, offset: Int, limit: Int) :[Course!]!
           course(id: ID!): Course
-          users: [User!]!
+          users(searchTerm: String, sortField: String, sortOrder: String, offset: Int, limit: Int): [User!]!
           user(id: ID!): User
      }
 
