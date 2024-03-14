@@ -33,6 +33,7 @@ const Register = () => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [course, setCourses] = useState([]);
+
   const [user, setUser] = useState({
     name: "",
     email: "",
@@ -108,7 +109,6 @@ const Register = () => {
       });
       formIsValid = false;
     }
-    console.log(user);
 
     if (formIsValid) {
       try {
@@ -118,11 +118,13 @@ const Register = () => {
             email: user.email,
             role: user.role,
             password: user.password,
+            course: course,
           },
         });
 
         notification.success({ message: "Registeration Successfull" });
         dispatch(registerSuccess(data?.createUser?.token));
+        navigate("/");
       } catch (error) {
         notification.error({
           message: "Registeration failed",
@@ -131,8 +133,8 @@ const Register = () => {
       }
     }
   };
-
   console.log(course);
+
   return (
     <div className="flex items-center justify-center flex-col w-full h-svh custom-image">
       <div className="mb-2 p-4">

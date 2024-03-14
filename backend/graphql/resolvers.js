@@ -26,7 +26,7 @@ const resolvers = {
           lecture: async (_, { id }) => {
                return getSingleLecture(id);
           },
-          courses: async (_, { searchTerm, sortField, sortOrder, offset, limit }, context) => {
+          courses: async (_, { searchTerm, sortField, sortOrder, offset, limit }) => {
                return getAllCourse(searchTerm, sortField, sortOrder, offset, limit);
           },
           course: async (_, { id }) => {

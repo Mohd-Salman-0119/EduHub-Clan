@@ -19,7 +19,7 @@ const Layout = () => {
       <div className="w-full overflow-scroll bg-secondary h-svh">
         <EduNavbar />
         {/* <DrawerContainer />  */}
-        <div>{<Outlet />}</div>
+        <div className="p-3">{<Outlet />}</div>
       </div>
     </div>
   );

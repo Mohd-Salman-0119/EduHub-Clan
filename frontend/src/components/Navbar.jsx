@@ -15,8 +15,12 @@ import {
   Cog6ToothIcon,
   UserCircleIcon,
 } from "@heroicons/react/24/solid";
+import { useDispatch } from "react-redux";
+import { logoutSuccess } from "../Redux/Auth/actionType";
 
 const EduNavbar = () => {
+  const dispatch = useDispatch();
+  
   return (
     <Navbar
       variant="gradient"
@@ -61,7 +65,10 @@ const EduNavbar = () => {
                 <Cog6ToothIcon height={16} width={16} />
                 <Typography>Edit Profile</Typography>
               </MenuItem>
-              <MenuItem className="flex items-center gap-2">
+              <MenuItem
+                className="flex items-center gap-2"
+                onClick={() => dispatch(logoutSuccess())}
+              >
                 <ArrowRightEndOnRectangleIcon height={16} width={16} />
                 <Typography>Logout</Typography>
               </MenuItem>
