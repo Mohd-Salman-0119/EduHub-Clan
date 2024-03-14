@@ -27,3 +27,17 @@ export const LOGIN_USER_MUTATION = gql`
           }
      }
 `
+export const DELETE_LECTURE_MUTATION = gql`
+     mutation DeleteLecture($deleteLectureId: ID!) {
+          deleteLecture(id: $deleteLectureId)
+     }
+`
+
+export const CREATE_LECTURE_MUTATION = gql`
+   mutation CreateLecture($title: String!, $instructor: String!, $meetLink: String!, $marksAsDone: Boolean!, $course: ID!, $startTime: String!, $endTime: String!) {
+     createLecture(title: $title, instructor: $instructor, meet_link: $meetLink, marks_as_done: $marksAsDone, course: $course, start_time: $startTime, end_time: $endTime) {
+          title
+     }
+}
+
+`

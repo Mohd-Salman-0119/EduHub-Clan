@@ -15,8 +15,8 @@ import { fetchLecturesSuccess } from "./Redux/lectures/actionType";
 
 const App = () => {
   const {
-    loading: loadingCourse,
-    error: errorCourse,
+    loading: loadingCourses,
+    error: errorCourses,
     data: dataCourses,
   } = useQuery(GET_ALL_COURSE);
   const {
@@ -25,7 +25,7 @@ const App = () => {
     data: dataLectures,
   } = useQuery(GET_ALL_LECTURES);
   const {
-    loading: loadingUser,
+    loading: loadingUsers,
     error: errorUsers,
     data: dataUsers,
   } = useQuery(GET_ALL_USERS);
@@ -33,18 +33,29 @@ const App = () => {
   const dispatch = useDispatch();
 
   console.log(dataCourses?.courses);
-  console.log(dataUsers?.users);
-  console.log(dataLectures?.lectures);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    // dispatch actions
     dispatch(loginSuccess(token));
-    dispatch(fetchCoursesSuccess(dataCourses?.courses));
-    dispatch(fetchUsersSuccess(dataUsers?.users));
-    dispatch(fetchLecturesSuccess(dataLectures?.lectures));
-  }, []);
+  }, [dispatch]);
 
+  useEffect(() => {
+    if (!loadingCourses) {
+      dispatch(fetchCoursesSuccess(dataCourses?.courses));
+    }
+  }, [dispatch, loadingCourses, dataCourses]);
+
+  useEffect(() => {
+    if (!loadingLectures) {
+      dispatch(fetchLecturesSuccess(dataLectures?.lectures));
+    }
+  }, [dispatch, loadingLectures, dataLectures]);
+
+  useEffect(() => {
+    if (!loadingUsers) {
+      dispatch(fetchUsersSuccess(dataUsers?.users));
+    }
+  }, [dispatch, loadingUsers, dataUsers]);
   return (
     <div>
       <MainRoutes />

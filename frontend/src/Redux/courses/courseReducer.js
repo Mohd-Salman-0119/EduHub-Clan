@@ -14,6 +14,7 @@ const initialState = {
 };
 
 const courseReducer = (state = initialState, action) => {
+     console.log(action)
      switch (action.type) {
           case FETCH_COURSES_SUCCESS:
                return {

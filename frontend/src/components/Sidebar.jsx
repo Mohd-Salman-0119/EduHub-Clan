@@ -10,6 +10,9 @@ import {
   UserCircleIcon,
   PowerIcon,
   ClipboardDocumentListIcon,
+  AcademicCapIcon,
+  BookOpenIcon,
+  UsersIcon,
 } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
 import { logo } from "../assets/image";
@@ -39,7 +42,7 @@ const Sidebar = () => {
         <Link to="/lectures">
           <ListItem>
             <ListItemPrefix>
-              <ClipboardDocumentListIcon className="h-5 w-5" />
+              <BookOpenIcon className="h-5 w-5" />
             </ListItemPrefix>
             Lectures
           </ListItem>
@@ -47,17 +50,19 @@ const Sidebar = () => {
         <Link to="/courses">
           <ListItem>
             <ListItemPrefix>
-              <UserCircleIcon className="h-5 w-5" />
+              <AcademicCapIcon className="h-5 w-5" />
             </ListItemPrefix>
             Courses
           </ListItem>
         </Link>
-        <ListItem>
-          <ListItemPrefix>
-            <PowerIcon className="h-5 w-5" />
-          </ListItemPrefix>
-          Log Out
-        </ListItem>
+        <Link to={"/users"}>
+          <ListItem>
+            <ListItemPrefix>
+              <UsersIcon className="h-5 w-5" />
+            </ListItemPrefix>
+            Log Out
+          </ListItem>
+        </Link>
       </List>
     </Card>
   );

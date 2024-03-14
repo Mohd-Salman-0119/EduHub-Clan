@@ -40,7 +40,7 @@ const getSingleLecture = asyncHandler(async (id) => {
 })
 const createLecture = asyncHandler(async (args) => {
      try {
-          const { } = args;
+         
           const newLecture = await LectureModel.create(args);
           console.log(newLecture)
 

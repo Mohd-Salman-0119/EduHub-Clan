@@ -5,7 +5,7 @@ const typeDefs = `#graphql
           title: String!
           instructor: String!
           meet_link: String!
-          marks_as_done: Boolean!
+          marks_as_done: Boolean
           course: Course!
           start_time: String!
           end_time: String!
@@ -60,7 +60,7 @@ const typeDefs = `#graphql
 
           updateUser(id: ID!, name: String, email: String, age: Int, city: String, role: UserRole, course:[String]): User
 
-          createLecture(title: String!, instructor: String!, meet_link: String!, marks_as_done: Boolean!, course: ID!, start_time: String!, end_time:String!): Lecture
+          createLecture(title: String!, instructor: String!, meet_link: String!, marks_as_done: Boolean, course: ID!, start_time: String!, end_time:String!): Lecture
           updateLecture(id: ID!, title: String, instructor: String, meet_link: String, marks_as_done: Boolean): Lecture
           deleteLecture(id: ID!): ID
           createCourse(title: String!, description: String!): Course

@@ -24,7 +24,7 @@ export const GET_ALL_LECTURES = gql`
 `
 export const GET_ALL_USERS = gql`
   query GetAllUsers {
-    users {
+      users {
         _id
         email
         name
